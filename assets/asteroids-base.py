@@ -79,13 +79,12 @@ all_mobs = pygame.sprite.Group()
 class Player(pygame.sprite.Sprite):
     
     #construtor da classe
-    def __init__(self):
+    def __init__(self, player_img):
         
         #Construtor da classe pai (Sprite)
         pygame.sprite.Sprite.__init__(self)
         
         #Carregando a imagem de fundo
-        player_img = pygame.image.load(path.join(img_dir, "playerShip1_orange.png"))
         self.image = player_img
         
         #Diminuindo o tamanho da imagem
@@ -140,7 +139,19 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
-        
+#Carrega os assets
+def load_assets(img_dir, snd_dir):
+    assets = {}
+    assets["player_img"] = pygame.image.load(path.join(img_dir, 'playerShip1_orange.png')). convert()
+    assets["mob_img"] = pygame.image.load(path.join(img_dir, 'meteorBrown_med1.png')).convert()
+    assets["bullet_img"] = pygame.image.load(path.join(img_dir, 'laserRed16.png')).convert()
+    assets["background"] = pygame.image.load(path.join(img_dir, 'starfield.png')).convert()
+    assets["boom_sound"] = pygame.mixer.Sound(path.join(snd_dir, 'expl3.wav')).convert()
+    assets["destroy_sound"] = pygame.mixer.Sound(path.join(snd_dir, 'expl6.wav')). convert()
+    assets["pew_sound"] = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav')).convert()   
+    return assets
+
+
 # Inicialização do Pygame.
 pygame.init()
 pygame.mixer.init()
@@ -151,23 +162,25 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # Nome do jogo
 pygame.display.set_caption("Asteroids")
 
+#Carrega todos os assets uma vez só, e guarda em um dicionário
+assets = load_assets(img_dir, snd_dir)
+
 # Variável para o ajuste de velocidade
 clock = pygame.time.Clock()
 
 # Carrega o fundo do jogo
-background = pygame.image.load(path.join(img_dir, 'starfield.png')).convert()
+background = assets["background"]
 background_rect = background.get_rect()
 
 #Som
 pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-Seamlessloop.ogg'))
 pygame.mixer.music.set_volume(0.4)
-boom_sound = pygame.mixer.Sound(path.join(snd_dir, 'expl3.wav'))
-pew_sound = pygame.mixer.Sound(path.join(snd_dir, 'pew.wav'))
-destroy_sound = pygame.mixer.Sound(path.join(snd_dir, 'expl6.wav'))
-
+boom_sound = assets["boom_sound"]
+pew_sound = assets["pew_sound"]
+destroy_sound = assets["destroy_sound"]
 
 #Cria uma nave. O construtor será chamado automaticamete
-player = Player()
+player = Player(assets["player_img"])
 
 #Cria um grupo de sprites e adiciona a nave
 all_sprites = pygame.sprite.Group()
