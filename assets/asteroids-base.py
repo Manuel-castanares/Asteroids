@@ -35,6 +35,8 @@ class Mob(pygame.sprite.Sprite):
         self.image = meteoro_img
         
         
+        
+        
 
 #Classe jogador que representa nave
 
