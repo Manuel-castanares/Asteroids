@@ -3,6 +3,8 @@
 # Importando as bibliotecas necessárias.
 import pygame
 from os import path
+import random
+import time
 
 # Estabelece a pasta que contem as figuras.
 img_dir = path.join(path.dirname(__file__), 'img')
@@ -34,9 +36,40 @@ class Mob(pygame.sprite.Sprite):
         meteoro_img = pygame.image.load(path.join(img_dir, "meteorBrown_med1.png"))
         self.image = meteoro_img
         
+        #transformando imagem
+        self.image = pygame.transform.scale(meteoro_img, (50, 38))
         
+        #Transparente
+        self.image.set_colorkey(BLACK)
         
+        #Posicionamento
+        self.rect = self.image.get_rect()
         
+        self.rect.x = random.randrange(0, WIDTH)
+        
+        self.rect.y = random.randrange(-100, -40)
+        
+        #Speed
+        self.speedx = random.randrange(-3, 3)
+        
+        self.speedy = random.randrange(2, 9)
+        
+        #Melhora colisão
+        self.radius = int(self.rect.width * .85/2)
+        
+    def update(self):
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+        
+        #Se o meteoro sair do rect:
+        if self.rect.top > HEIGHT + 10 or self.rect.left < -25 or self.rect.right > WIDTH + 20:
+            self.rect.x = random.randrange(WIDTH - self.rect.width)
+            self.rect.y = random.randrange(-100, -40)
+            self.speedx = random.randrange(-3, 3)
+            self.speedy = random.randrange(2, 9)
+        
+#Grupo Mobs:
+all_mobs = pygame.sprite.Group()  
 
 #Classe jogador que representa nave
 
@@ -78,6 +111,8 @@ class Player(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.rect.left = 0
             
+        
+            
                 
 
     
@@ -105,6 +140,11 @@ player = Player()
 #Cria um grupo de sprites e adiciona a nave
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
+
+for i in range(8):
+    m = Mob()
+    all_mobs.add(m)
+    all_sprites.add(m)  
 
 
 
